@@ -104,7 +104,7 @@ Deploy the frontend and backend as separate Vercel projects from this repository
 
 1. Set the frontend project's **Root Directory** to `frontend`. Vercel should build it with `npm run build` and use `dist` as the output directory. Set `VITE_API_URL` to the backend URL ending in `/api` (for example, `https://your-backend.vercel.app/api`). The frontend includes a Vercel rewrite so direct links such as `/farmer/login` load correctly.
 2. Set the backend project's **Root Directory** to `backend`. Configure these environment variables in Vercel:
-   - `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` for a publicly reachable managed MySQL database. Do not use `127.0.0.1` or `localhost` for a Vercel deployment.
+   - Either `DATABASE_URL` in `mysql://user:password@host:port/database` format or the separate `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` variables for a publicly reachable managed MySQL database. Set `DB_SSL=true` if your database provider requires TLS. Do not use `127.0.0.1` or `localhost` for a Vercel deployment.
    - `JWT_SECRET` to a long, random secret value.
    - Optionally set `AI_SERVICE_URL` and `FIREBASE_CREDENTIALS` if those services are deployed/configured.
 3. Initialize the managed MySQL database with `database/schema.sql` and `database/seed.sql`. The login API needs the schema and user records; deploying the backend does not create them automatically.
