@@ -108,7 +108,7 @@ Deploy the frontend and backend as separate Vercel projects from this repository
    - `JWT_SECRET` to a long, random secret value.
    - Optionally set `AI_SERVICE_URL` and `FIREBASE_CREDENTIALS` if those services are deployed/configured.
 3. Initialize the managed MySQL database with `database/schema.sql` and `database/seed.sql`. The login API needs the schema and user records; deploying the backend does not create them automatically.
-4. Redeploy both projects after changing environment variables. Check `https://your-backend.vercel.app/api/health` to verify the backend is reachable.
+4. Redeploy both projects after changing environment variables. Check `https://your-backend.vercel.app/api/health`. A successful response includes `"database":"connected"` and `"schema":"ready"`. HTTP 503 with `"database":"unavailable"` means the backend cannot connect to MySQL; `"schema":"unavailable"` means the database is reachable but the required `users`/`farmers` tables are missing or incompatible.
 
 Keep credentials in Vercel environment settings; do not commit them to the repository.
 

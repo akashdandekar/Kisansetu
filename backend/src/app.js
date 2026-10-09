@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
+const { pool } = require('./config/db');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
 // Route imports
@@ -44,9 +45,34 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/api/health', (req, res) => {
-  res.json({
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+  } catch (error) {
+    console.error('[Health Check] Database connection failed:', error.message);
+    return res.status(503).json({
+      status: 'unhealthy',
+      database: 'unavailable',
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  try {
+    await pool.query('SELECT 1 FROM users JOIN farmers ON farmers.user_id = users.id LIMIT 0');
+  } catch (error) {
+    console.error('[Health Check] Database schema check failed:', error.message);
+    return res.status(503).json({
+      status: 'unhealthy',
+      database: 'connected',
+      schema: 'unavailable',
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  return res.json({
     status: 'healthy',
+    database: 'connected',
+    schema: 'ready',
     system: 'KisanSetu - Smart Agricultural Procurement Management System',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
