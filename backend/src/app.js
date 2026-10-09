@@ -36,6 +36,14 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Health check endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'healthy',
+    system: 'KisanSetu Backend',
+    healthCheck: '/api/health'
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
